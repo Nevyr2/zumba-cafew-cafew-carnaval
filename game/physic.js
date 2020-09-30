@@ -12,6 +12,26 @@ function update()
         player1.accelerate(moveDistance);
     if (keyboard.pressed("down"))
         player1.decelerate(moveDistance);
+	
+	
+	for (z = 0; z < listEnemy.length; z++)
+	{
+		enemyMoves = Array("left","right","up","down");
+		enemyMove = enemyMoves[Math.floor(Math.random()*enemyMoves.length)];
+
+		if (enemyMove === "left")
+			listEnemy[z].turnLeft(rotateAngle);
+		if (enemyMove === "right")
+			listEnemy[z].turnRight(rotateAngle);
+		if (enemyMove === "up")
+			listEnemy[z].accelerate(moveDistance);
+		if (enemyMove === "down")
+			listEnemy[z].decelerate(moveDistance);
+		
+		listEnemy[z].move();
+		
+	}
+	
 
     player1.move();
     controls.update();

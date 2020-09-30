@@ -36,6 +36,7 @@ function collisions()
 {
     bullet_collision();
     player_collision();
+	enemy_collision();
     player_falling();
 }
 
@@ -50,7 +51,22 @@ function bullet_collision()
             scene.remove(player1.bullets[i]);
             player1.bullets.splice(i, 1);
             i--;
+			
         }
+		
+		for (z = 0; z < listEnemy.length; z++)
+		{
+			if (player1.bullets[i].position.x - 20 < listEnemy[z].position.x && player1.bullets[i].position.x + 20 > listEnemy[z].position.x &&
+				player1.bullets[i].position.y - 20 < listEnemy[z].position.y && player1.bullets[i].position.y + 20 > listEnemy[z].position.y)
+				{
+					scene.remove(player1.bullets[i]);
+					scene.remove(listEnemy[z].graphic);
+					listEnemy[z].dead();
+					listEnemy.splice(z,z + 1);
+					i--;
+					break;
+				}
+		}
     }
 
 }
@@ -61,12 +77,35 @@ function player_collision()
     var x = player1.graphic.position.x + WIDTH / 2;
     var y = player1.graphic.position.y + HEIGHT / 2;
 
+	if ( x < 0)
+		player1.graphic.position.x -= x;
     if ( x > WIDTH )
         player1.graphic.position.x -= x - WIDTH;
     if ( y < 0 )
         player1.graphic.position.y -= y;
     if ( y > HEIGHT )
         player1.graphic.position.y -= y - HEIGHT;
+
+}
+
+function enemy_collision(enemy)
+{
+    //collision between player and walls
+		
+	for (z = 0; z < listEnemy.length; z++)
+	{
+		var x = listEnemy[z].graphic.position.x + WIDTH / 2;
+		var y = listEnemy[z].graphic.position.y + HEIGHT / 2;
+
+		if ( x < 0)
+			listEnemy[z].graphic.position.x -= x;
+		if ( x > WIDTH )
+			listEnemy[z].graphic.position.x -= x - WIDTH;
+		if ( y < 0 )
+			listEnemy[z].graphic.position.y -= y;
+		if ( y > HEIGHT )
+			listEnemy[z].graphic.position.y -= y - HEIGHT;
+	}
 
 }
 
@@ -81,7 +120,11 @@ function player_falling()
     var element = null;
 
     for (var i = 0; i < length; i++) {
+		
         element = noGround[i];
+		
+		if (!element)
+			continue;
 
         var tileX = (element[0]) | 0;
         var tileY = (element[1]) | 0;
@@ -93,7 +136,8 @@ function player_falling()
             && (y > tileY) 
             && (y < mtileY))
         {
-           player1.dead();
+           player1.lessLife();
+		   break;
         }
     }
 
